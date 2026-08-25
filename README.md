@@ -9,14 +9,15 @@ later planners will call.
 
 Before changing code, read the student materials in this order:
 
-1. `week_02_functions_tests_numpy_reading_v22_motion_path.pdf` from the LMS;
-2. `ASSIGNMENT_2_PATH_GEOMETRY_AND_VERIFICATION_V21.pdf` from the LMS;
+1. `docs/week_02_functions_tests_numpy_reading_v22_motion_path.pdf`;
+2. `docs/ASSIGNMENT_2_PATH_GEOMETRY_AND_VERIFICATION_V21.pdf`;
 3. this `README.md`;
 4. `PROTECTED_FILES.md`.
 
 The Reading explains the programming concepts. The Assignment fixes the TODO
 order, evidence, and submission conditions. This README supplies the exact
-repository commands. If the three sources appear inconsistent, stop and ask
+repository commands. The LMS copies must be identical to the two versioned
+files under `docs/`. If the three sources appear inconsistent, stop and ask
 before changing a protected file.
 
 ## 1. Create the private submission repository
@@ -40,6 +41,10 @@ git remote -v
 ```
 
 Both `origin` URLs must point to the private repository that you created.
+The downloadable starter ZIP is a review and recovery copy and intentionally
+does not contain Git history. A directory produced by merely extracting that
+ZIP is not the submitted repository. The evaluated repository begins when you
+create a private repository from the public template and clone it as above.
 
 ## 2. Public programming contract
 
@@ -66,13 +71,23 @@ input owned by the caller.
 
 ## 3. Install and verify the environment
 
-Run commands from the repository root.
+Run commands from the repository root. The normal path is to reuse the
+`applied-programming-2026` environment created in Week 1.
 
 ```powershell
 conda activate applied-programming-2026
 python -m pip install -r requirements.txt
 python -m pip install -e . --no-build-isolation
 python scripts/verify_environment.py
+```
+
+If `conda activate applied-programming-2026` reports that the environment does
+not exist, create it once from the protected environment file, then repeat the
+installation and verification commands above.
+
+```powershell
+conda env create -f environment.yml
+conda activate applied-programming-2026
 ```
 
 The final line must be:

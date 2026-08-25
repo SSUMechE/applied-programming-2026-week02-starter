@@ -16,6 +16,8 @@ Do not edit:
 - `tests/test_published_contract.py`
 - `pyproject.toml`
 - `requirements.txt`
+- `environment.yml`
+- every file under `docs/`
 - `README.md`
 - this protected-file list
 
