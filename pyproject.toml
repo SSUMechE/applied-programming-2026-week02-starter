@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools==81.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ap-week02-path"
+version = "0.7.0"
+description = "Week 2 functions, tests, and NumPy path-geometry exercise"
+requires-python = ">=3.12,<3.13"
+dependencies = ["numpy==2.5.1"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ap_week02_path*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
