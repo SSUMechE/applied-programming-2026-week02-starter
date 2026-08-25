@@ -90,6 +90,18 @@ conda env create -f environment.yml
 conda activate applied-programming-2026
 ```
 
+If the `conda` command itself is unavailable, use the supported repository-local
+virtual-environment fallback below. Continue to run later commands with this
+environment activated.
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install -r requirements.txt
+python -m pip install -e . --no-build-isolation
+python scripts/verify_environment.py
+```
+
 The final line must be:
 
 ```text
