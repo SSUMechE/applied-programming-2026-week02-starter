@@ -1,4 +1,4 @@
-"""Generate protected numerical evidence and a simple SVG path preview."""
+"""Canonical command for JSON evidence and the interpolated SVG preview."""
 
 from __future__ import annotations
 

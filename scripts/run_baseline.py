@@ -18,6 +18,8 @@ def main() -> int:
         "-m",
         "pytest",
         "-q",
+        "-p",
+        "no:cacheprovider",
         "--tb=no",
         "tests/test_published_contract.py",
     ]
@@ -37,6 +39,10 @@ def main() -> int:
         )
         return 1
     print(f"[PASS] Intentional baseline confirmed: {failed} failed, {passed} passed.")
+    print(
+        "[INFO] Record this summary and the first FAILED pytest test node ID in "
+        "artifacts/engineering_note.md section 0."
+    )
     return 0
 
 

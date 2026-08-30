@@ -2,7 +2,9 @@
 
 Implement pure numerical functions only. Do not print, plot, write files,
 modify caller-owned data, implement a planner, or perform collision checking
-in this module.
+in this module. Numeric tuples, lists, and native numeric NumPy arrays are
+accepted; NumPy arrays with ``dtype=object`` are invalid even when every stored
+object happens to be a number.
 """
 
 from __future__ import annotations

@@ -13,7 +13,7 @@ EXPECTED_PYTHON = (3, 12)
 REQUIRED_DISTRIBUTIONS = {
     "numpy": "2.5.1",
     "pytest": "9.1.1",
-    "setuptools": "81.0.0",
+    "setuptools": "83.0.0",
     "build": "1.3.0",
 }
 PUBLIC_NAMES = (

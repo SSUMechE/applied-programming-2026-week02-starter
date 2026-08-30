@@ -2,7 +2,9 @@ from __future__ import annotations
 
 # Published contract. Students must not edit this file.
 
+import ast
 import inspect
+import textwrap
 
 import numpy as np
 import pytest
@@ -58,16 +60,20 @@ def test_public_signatures_are_frozen(function: object, parameters: list[str]) -
     "start,goal,expected",
     [
         ((0.0, 0.0), (3.0, 4.0), 5.0),
-        ((-2.0, 1.0), (1.0, 1.0), 3.0),
-        ((1.25, -0.5), (1.25, -0.5), 0.0),
+        ([-2, 1], [1, 1], 3.0),
+        (np.array([1.25, -0.5]), np.array([1.25, -0.5]), 0.0),
     ],
 )
 def test_segment_length_normal_and_boundary_values(
-    start: tuple[float, float], goal: tuple[float, float], expected: float
+    start: object, goal: object, expected: float
 ) -> None:
-    result = segment_length(start, goal)
+    start_before = np.asarray(start).copy()
+    goal_before = np.asarray(goal).copy()
+    result = segment_length(start, goal)  # type: ignore[arg-type]
     assert isinstance(result, float)
     assert result == pytest.approx(expected, rel=1e-12, abs=1e-12)
+    assert np.array_equal(np.asarray(start), start_before)
+    assert np.array_equal(np.asarray(goal), goal_before)
 
 
 @pytest.mark.parametrize(
@@ -75,10 +81,10 @@ def test_segment_length_normal_and_boundary_values(
     [
         [0.0],
         [0.0, 1.0, 2.0],
-        [[0.0, 1.0]],
+        np.array([0.0, 1.0], dtype=object),
         [0.0, np.nan],
         [0.0, np.inf],
-        [True, False],
+        [True, 1.0],
         [1.0 + 0.0j, 2.0 + 0.0j],
         ["0", "1"],
     ],
@@ -104,6 +110,13 @@ def test_interpolation_shape_dtype_and_endpoints() -> None:
 def test_interpolation_uses_uniform_spacing() -> None:
     result = interpolate_segment((0.0, 0.0), (2.0, 4.0), 3)
     assert np.allclose(result, [[0.0, 0.0], [1.0, 2.0], [2.0, 4.0]])
+    tree = ast.parse(textwrap.dedent(inspect.getsource(interpolate_segment)))
+    assert any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "linspace"
+        for node in ast.walk(tree)
+    )
 
 
 def test_interpolation_degenerate_segment_repeats_point() -> None:
@@ -113,11 +126,23 @@ def test_interpolation_degenerate_segment_repeats_point() -> None:
 
 @pytest.mark.parametrize(
     "num_samples",
-    [0, 1, -3, 2.5, True, np.int64(1), "5", np.nan],
+    [1, 2.5, True, np.int64(1), "5", np.nan],
 )
 def test_interpolation_rejects_invalid_num_samples(num_samples: object) -> None:
     with pytest.raises(PathInputError):
         interpolate_segment((0.0, 0.0), (1.0, 1.0), num_samples)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize(
+    "start,goal",
+    [
+        ([True, 0.0], (1.0, 1.0)),
+        ((0.0, 0.0), [1.0, np.inf]),
+    ],
+)
+def test_interpolation_rejects_invalid_endpoint(start: object, goal: object) -> None:
+    with pytest.raises(PathInputError):
+        interpolate_segment(start, goal, 3)  # type: ignore[arg-type]
 
 
 def test_interpolation_translation_invariance() -> None:
@@ -155,9 +180,9 @@ def test_path_length_agrees_with_scalar_segment_sum() -> None:
     [
         [],
         [[4.0, -2.0]],
-        [[0.0]],
+        [[True, 0.0], [1.0, 2.0]],
         [[0.0, 1.0, 2.0]],
-        [[[0.0, 1.0]]],
+        np.array([[0.0, 1.0], [2.0, 3.0]], dtype=object),
         [[0.0, 0.0], [1.0, np.nan]],
     ],
 )
@@ -175,10 +200,21 @@ def test_path_length_translation_invariance_and_no_mutation() -> None:
 
 
 def test_path_lengths_shape_dtype_and_values() -> None:
-    result = path_lengths(PUBLIC_PATHS)
+    result = path_lengths(PUBLIC_PATHS.tolist())
     assert result.shape == (3,)
     assert result.dtype == np.float64
     assert np.allclose(result, [8.0, 2.0, 3.0], rtol=0.0, atol=1e-12)
+    tree = ast.parse(textwrap.dedent(inspect.getsource(path_lengths)))
+    forbidden = (
+        ast.For,
+        ast.AsyncFor,
+        ast.While,
+        ast.ListComp,
+        ast.SetComp,
+        ast.DictComp,
+        ast.GeneratorExp,
+    )
+    assert not any(isinstance(node, forbidden) for node in ast.walk(tree))
 
 
 def test_path_lengths_agree_with_scalar_reference() -> None:
@@ -200,12 +236,14 @@ def test_path_lengths_translation_invariance_and_no_mutation() -> None:
     [
         np.empty((0, 3, 2)),
         np.empty((2, 0, 2)),
-        np.ones((2, 3)),
+        np.zeros((2, 1, 2)),
         np.ones((2, 3, 3)),
         np.full((2, 3, 2), np.nan),
-        np.ones((2, 3, 2), dtype=bool),
+        [[[True, 0.0], [1.0, 2.0]]],
     ],
 )
-def test_path_lengths_reject_invalid_batch(paths: np.ndarray) -> None:
+def test_path_lengths_reject_invalid_batch(paths: object) -> None:
     with pytest.raises(PathInputError):
-        path_lengths(paths)
+        path_lengths(paths)  # type: ignore[arg-type]
+    with pytest.raises(PathInputError):
+        path_lengths(np.ones((1, 2, 2), dtype=object))
