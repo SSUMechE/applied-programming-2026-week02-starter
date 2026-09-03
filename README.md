@@ -9,16 +9,17 @@ later planners will call.
 
 Before changing code, read the student materials in this order:
 
-1. `docs/week_02_functions_tests_numpy_reading_v25.pdf`;
-2. `docs/ASSIGNMENT_2_PATH_GEOMETRY_AND_VERIFICATION_V26.pdf`;
-3. this `README.md`;
-4. `PROTECTED_FILES.md`.
+1. `docs/week_02_functions_tests_numpy_reading_v26.pdf`, including its final
+   **Assignment 2** section;
+2. this `README.md`;
+3. `PROTECTED_FILES.md`.
 
-The Reading explains the programming concepts. The Assignment fixes the TODO
-order, evidence, and submission conditions. This README supplies the exact
-repository commands. The LMS copies must be identical to the two versioned
-files under `docs/`. If the three sources appear inconsistent, stop and ask
-before changing a protected file.
+The integrated Reading explains the programming concepts and then gives the
+complete Assignment 2 procedure, evidence, and submission conditions in its
+final section. This README supplies the exact repository commands. The LMS
+copy must be identical to the versioned Reading under `docs/`. If the Reading,
+README, and protected-file list appear inconsistent, stop and ask before
+changing a protected file.
 
 The editable module `src/ap_week02_path/path_geometry.py` has the Python import
 path `ap_week02_path.path_geometry`. Complete TODO 1 through TODO 4 in that

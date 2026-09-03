@@ -21,6 +21,10 @@ Do not edit:
 - `README.md`
 - this protected-file list
 
+The single PDF under `docs/` is the canonical Week 2 Reading. Its final
+section contains the complete Assignment 2 specification; there is no separate
+student Assignment PDF.
+
 Protected commands create or replace these required generated outputs; students
 must commit them but must not hand-edit them:
 
