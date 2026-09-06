@@ -42,7 +42,6 @@ CATEGORY_PREFIXES = {
 }
 TOLERANCE_CATEGORIES = ("normal", "translation", "batch_or_ownership")
 NOTE_RESPONSE_MARKER = "<!-- STUDENT RESPONSE -->"
-MIN_RESPONSE_CHARACTERS = 40
 
 
 def _call_name(call: ast.Call) -> str | None:
@@ -86,20 +85,6 @@ def _has_explicit_tolerance(node: ast.FunctionDef) -> bool:
 def _body_fingerprint(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
     module = ast.Module(body=node.body, type_ignores=[])
     return ast.dump(module, include_attributes=False)
-
-
-def _literal_sequences(node: ast.AST) -> set[str]:
-    """Return literal tuple/list sequences used as candidate numerical inputs."""
-    sequences: set[str] = set()
-    for item in ast.walk(node):
-        if not isinstance(item, (ast.List, ast.Tuple)) or len(item.elts) < 2:
-            continue
-        try:
-            value = ast.literal_eval(item)
-        except (ValueError, TypeError):
-            continue
-        sequences.add(repr(value))
-    return sequences
 
 
 def _read_test_trees() -> tuple[ast.Module | None, ast.Module | None, list[str]]:
@@ -175,16 +160,6 @@ def _check_test_structure() -> tuple[list[str], int]:
                 "student evidence contains exact copies of published test bodies: "
                 + ", ".join(copied)
             )
-        published_literals = _literal_sequences(published_tree)
-        for category, matches in category_tests.items():
-            if matches and not any(
-                _literal_sequences(node).difference(published_literals)
-                for node in matches
-            ):
-                failures.append(
-                    f"{category} evidence needs a literal input sequence "
-                    "not used in published tests"
-                )
 
     if not failures:
         print(f"[OK] structured student evidence functions: {len(tests)}")
@@ -298,12 +273,9 @@ def _check_engineering_note() -> list[str]:
             failures.append(
                 "engineering-note section 0 must record the first failing pytest test node ID"
             )
-    for number in range(1, 6):
-        visible_characters = len(re.findall(r"\w", responses.get(number, "")))
-        if number in responses and visible_characters < MIN_RESPONSE_CHARACTERS:
-            failures.append(f"engineering-note section {number} needs a substantive response")
     if not failures:
-        print("[OK] engineering note has a recorded baseline and six completed sections")
+        print("[OK] engineering note records the baseline and has responses in sections 0-5")
+        print("[INFO] Response accuracy and independent-case quality require instructor review.")
     return failures
 
 
@@ -432,7 +404,7 @@ def main() -> int:
         for failure in failures:
             print(f"[FAIL] {failure}")
         return 1
-    print("[PASS] Student tests, note, artifacts, and clean wheel are verified.")
+    print("[PASS] Automated student-test, note-presence, artifact, and wheel checks passed.")
     return 0
 
 

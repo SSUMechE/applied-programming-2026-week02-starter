@@ -22,10 +22,10 @@ Do not edit:
 - this protected-file list
 
 The single PDF under `docs/` is the canonical Week 2 Reading. Its final
-section contains the complete Assignment 2 specification; there is no separate
+section contains the complete Assignment 2 specification. There is no separate
 student Assignment PDF.
 
-Protected commands create or replace these required generated outputs; students
+Protected commands create or replace these required generated outputs. Students
 must commit them but must not hand-edit them:
 
 - `artifacts/path_geometry_summary.json`
@@ -43,18 +43,23 @@ functions and must not be edited to conceal an incorrect package or import.
 Within `path_geometry.py`, the exception class, public function names,
 parameter names and order, documented units, accepted shapes, and output
 shapes are frozen. Students may add internal helpers whose names begin with
-`_`. Invalid inputs must raise `PathInputError`; values must not be silently
+`_`. Invalid inputs must raise `PathInputError`. Values must not be silently
 clipped, reshaped, or repaired. `path_lengths` must be vectorized over the
 path, waypoint, and coordinate axes. Do not use a Python `for`, `while`, or
 comprehension inside that function.
 
 `interpolate_segment` must generate `num_samples` uniformly spaced points with
 `np.linspace(0.0, 1.0, num_samples)`. The count is a Python or NumPy integer
-of at least two; Boolean values are invalid. A valid path contains at least
+of at least two. Boolean values are invalid. A valid path contains at least
 two waypoints.
+
+Both endpoints are preserved exactly after normalization to `float64`. Assign
+the first and last rows of the newly allocated interpolation output. Never
+write those values into a caller-owned array. Array-conversion failures and
+non-finite calculated outputs are reported as `PathInputError`.
 
 The artifact script and animated-SVG display are supplied callers of the
 student package. They may not be modified to hide an incorrect result. The SVG
-draws interpolated arrays returned by the student API; it does not plan, check
-collisions, or simulate physics. AI-assisted editing does not change this
-contract; the grader restores protected files before running the submission.
+draws interpolated arrays returned by the student API. It does not plan, check
+collisions, or simulate physics. The grader restores protected files before
+running the submission.
