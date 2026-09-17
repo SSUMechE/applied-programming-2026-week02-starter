@@ -1,5 +1,16 @@
 # Week 2 — Functions, Tests, and NumPy Review
 
+## Windows installation correction — 17 September 2026
+
+The corrected environment uses the Week 1 installation route: Conda supplies
+Python and pip, then pip installs the pinned course packages. The previous YAML
+selected conda-forge builds of NumPy and the test tools. Equal version numbers
+do not imply identical binaries. Package versions and the assignment are unchanged.
+
+If installation or import fails, follow [Conda environment repair](#conda-environment-repair).
+Keep a working Week 1 environment. Do not delete environments, replace TODO
+files, recreate your private repository or disable Windows security.
+
 Use two-dimensional path geometry to review Python, implement reusable
 functions, and verify NumPy calculations. You are not implementing a planner,
 collision checker, robot controller, or physics simulator this week.
@@ -83,8 +94,7 @@ channel and the same frozen package versions:
 
 ```bat
 conda create -n applied-programming-2026 --override-channels -c conda-forge ^
-  python=3.12.13 numpy=2.5.1 pytest=9.1.1 ^
-  pip=26.2.1 setuptools=83.0.0
+  python=3.12.13 pip=26.2.1
 ```
 
 In Anaconda Prompt, `^` continues the command on the next line. Review and
@@ -142,6 +152,53 @@ notepad artifacts\engineering_note.md
 Save without changing the `.md` extension. Do not replace an already written
 note with a fresh template. An `E` prefix in pytest's failure detail marks an
 exception or failed assertion detail. It is not an extra command or test count.
+
+## Conda environment repair
+
+If `python scripts/verify_environment.py` passes in your existing environment,
+keep using it. Otherwise, follow these steps in **Anaconda Prompt**, inside
+your existing Week 2 repository. This does not replace any student code.
+
+1. Create a separate environment without changing the old one.
+
+   ```bat
+   set PYTHONUTF8=1
+   conda create -n applied-programming-w02 --override-channels -c conda-forge python=3.12.13 pip=26.2.1
+   ```
+
+   Confirm the installation prompt with `y`. If that name already exists,
+   do not overwrite it. Activate it and try the following checks instead.
+   `PYTHONUTF8` addresses a possible `cp949` decoding error. It does not
+   remove an application-control block.
+
+2. Activate it and install the pinned packages using pip, as in Week 1.
+
+   ```bat
+   conda activate applied-programming-w02
+   python -c "import socket, ssl; print('IMPORTS_OK')"
+   python -m pip install -r requirements.txt
+   python -m pip install -e . --no-build-isolation
+   python scripts/verify_environment.py
+   ```
+
+   Stop at the first error. The import check must print `IMPORTS_OK`. The
+   verifier must finish with `[PASS] Week 2 path-geometry environment is ready.`
+   Do not subsequently run `conda install numpy` in this pip-managed setup.
+
+3. For an untouched starter, run `python scripts/run_baseline.py` and expect
+   `42 failed, 6 passed`. If you have changed TODOs, run `python -m pytest -q`
+   instead. Do not undo your work to reproduce the starter result.
+
+4. In later command windows, return to this repository and run
+   `conda activate applied-programming-w02` before the normal Week 2 commands.
+   Artifact generation, wheel building and LMS submission remain unchanged.
+
+These commands also work with the unchanged requirements in an older private
+repository. You do not need to edit a protected file, pull the public template,
+create another repository or send another invitation. If Windows still reports
+that an application-control policy blocked a DLL, stop and send the command
+and full error text to the instructor or your managed-PC administrator. Do not
+disable antivirus or Smart App Control. Keep passwords and tokens out of logs.
 
 ## 3. Complete TODO 1–4 and check each dependency
 
