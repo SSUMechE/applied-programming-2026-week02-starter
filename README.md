@@ -2,6 +2,11 @@
 
 ## Windows installation correction — 17 September 2026
 
+The Reading under `docs/` includes the V30.1 page 22 installation correction.
+Its existing filename is retained so earlier links continue to work. The
+fallback command installs only Python and pip with Conda, followed by
+`python -m pip install -r requirements.txt`. Assignment requirements are unchanged.
+
 The corrected environment uses the Week 1 installation route: Conda supplies
 Python and pip, then pip installs the pinned course packages. The previous YAML
 selected conda-forge builds of NumPy and the test tools. Equal version numbers
